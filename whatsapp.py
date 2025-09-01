@@ -11,7 +11,7 @@ load_dotenv()
 api_key = os.getenv('EVOLUTION_API_KEY')
 checkpointer = MemorySaver()
 app = Flask(__name__)
-instance_name = 'walter'
+instance_name = os.getenv('INSTANCE_NAME')
 evolution_api = EvolutionApi(instance_name, api_key)
 message_buffer = MessageBuffer(evolution_api, checkpointer)
 @app.route('/webhook', methods=['POST'])
