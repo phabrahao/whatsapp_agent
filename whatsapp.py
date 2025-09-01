@@ -1,13 +1,18 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 import json
 from datetime import datetime
-from buffer import MessageBuffer, EvolutionApi
+from buffer import MessageBuffer
+from evolution import EvolutionApi
 from langgraph.checkpoint.memory import MemorySaver
 from decrypt import decrypt_image
+load_dotenv()
+api_key = os.getenv('EVOLUTION_API_KEY')
 checkpointer = MemorySaver()
 app = Flask(__name__)
 instance_name = 'walter'
-evolution_api = EvolutionApi(instance_name)
+evolution_api = EvolutionApi(instance_name, api_key)
 message_buffer = MessageBuffer(evolution_api, checkpointer)
 @app.route('/webhook', methods=['POST'])
 def webhook():

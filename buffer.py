@@ -1,14 +1,6 @@
-import os
-import requests
-from dotenv import load_dotenv
 import threading
-import time
 from collections import defaultdict
 from agent import run_agent
-
-load_dotenv()
-
-api_key = os.getenv('EVOLUTION_API_KEY')
 
 class MessageBuffer:
     def __init__(self, instance, checkpointer):
@@ -82,22 +74,5 @@ class MessageBuffer:
         self.evolution_api.send_message(user_id, response)
         print("Messages processed and sent successfully")
 
-class EvolutionApi:
-    def __init__(self, instance, api_key):
-        self.instance = instance
-        self.api_key = api_key
 
-    def send_message(self, number, text):
-        url = f"localhost:8080/message/sendText/{self.instance}"
-        payload = {
-            "number": number,
-            "text": text
-        }
-        headers = {
-            "apikey": self.api_key,
-            "Content-Type": "application/json"
-        }
-        response = requests.post(url, json=payload, headers=headers)
-        print(response.text)
-        return response.text
 
