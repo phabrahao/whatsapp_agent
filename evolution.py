@@ -6,7 +6,7 @@ class EvolutionApi:
         self.api_key = api_key
 
     def send_message(self, number, text):
-        url = f"localhost:8080/message/sendText/{self.instance}"
+        url = f"http://localhost:8080/message/sendText/{self.instance}"
         payload = {
             "number": number,
             "text": text
