@@ -1,4 +1,4 @@
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langgraph.graph import MessagesState
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langgraph.graph import START, StateGraph
@@ -16,7 +16,7 @@ from calendar_test import create_calendar_event as create_gcal_event
 langchain.debug = True
 
 import os
-api_key = os.getenv('OPENAI_API_KEY')
+api_key = os.getenv('GROQ_API_KEY')
 load_dotenv(override=True)
 SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')
 CALENDAR_ID = os.getenv('CALENDAR_ID')
@@ -127,7 +127,7 @@ def create_calendar_event(
 
 def describe_image_with_llm(image_data: bytes) -> str:
     """Use OpenAI GPT-4V to describe image"""
-    llm = ChatOpenAI(model="gpt-4o", api_key=api_key)
+    llm = ChatGroq(model="meta-llama/llama-4-scout-17b-16e-instruct", api_key=api_key)
     current_year = datetime.now().year
     # Convert bytes to base64
     image_b64 = base64.b64encode(image_data).decode()
@@ -195,7 +195,7 @@ def process_multimodal_data(input_data: List[Dict[str, Any]]) -> str:
 tools = [create_calendar_event]
 
 def run_agent(prompt_input, tools=tools, thread_id=None, checkpointer=None):
-    llm = ChatOpenAI(model="gpt-4o-mini", api_key=api_key)
+    llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=api_key)
     llm_with_tools = llm.bind_tools(tools)
     print('agent run')
     
