@@ -140,7 +140,7 @@ def describe_image_with_llm(image_data: bytes) -> str:
         {
             "event_title": "The main title or name of the event",
             "date": "Event date (format as YYYY-MM-DD if possible, otherwise as written) If the format is just XX/ZZ, XX MUST BE DD AND ZZ MUST BE MM, NOT THE OTHER WAY AROUND",
-            "time": "Event time (if specified)",
+            "time": "Event time (if specified). If end time is not specified, don't include it",
             "location": {
                 "venue": "Name of the venue/place",
                 "address": "Full address if available",
