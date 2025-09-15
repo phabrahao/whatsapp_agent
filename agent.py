@@ -11,7 +11,7 @@ import json
 from datetime import datetime, timedelta
 import pytz
 from calendar_test import create_calendar_event as create_gcal_event
-
+from typing import Optional
 
 langchain.debug = True
 
@@ -24,11 +24,12 @@ CALENDAR_ID = os.getenv('CALENDAR_ID')
 def create_calendar_event(
     summary: str,
     start_datetime: str,
-    end_datetime: str = None,
-    location: str = None,
-    description: str = None,
+    end_datetime: Optional[str] = None,
+    location: Optional[str] = None,
+    description: Optional[str] = None,
     timezone: str = "America/New_York"
 ) -> str:
+
     """Create event in google calendar
 
     Args:
