@@ -126,7 +126,9 @@ def create_calendar_event(
             'status': 'confirmed',
         })
         
-        # Create the event
+        print(f"DEBUG: Event config being sent to Google Calendar:")
+        print(json.dumps(event_config, indent=2, default=str))
+
         result = create_gcal_event(SERVICE_ACCOUNT_FILE, CALENDAR_ID, event_config)
         
         return f"Successfully created calendar event: '{summary}' on {start_datetime}"
