@@ -232,6 +232,7 @@ For the create_calendar_event function:
 If the user provides an invitation image, extract the event details from the image description and create the calendar event.
 
 Give concise, helpful responses.
+If a event is created, always reassure to the user that the event was add to their calendar.
 """)
     
     def assistant(state: MessagesState):
