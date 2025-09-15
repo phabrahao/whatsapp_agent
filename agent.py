@@ -52,7 +52,16 @@ def create_calendar_event(
             start_date = datetime.strptime(start_datetime, '%Y-%m-%d').date()
             if end_datetime and 'T' not in end_datetime and len(end_datetime) == 10:
                 end_date = datetime.strptime(end_datetime, '%Y-%m-%d').date()
+                # Check if this is actually a multi-day event
+                if end_date > start_date:
+                    # Multi-day event: Google Calendar uses exclusive end dates,
+                    # so add 1 day to include the actual end date
+                    end_date = end_date + timedelta(days=1)
+                else:
+                    # Same day or invalid range, treat as single day
+                    end_date = start_date + timedelta(days=1)
             else:
+                # No end date provided, single day event
                 end_date = start_date + timedelta(days=1)
             
             event_config = {
