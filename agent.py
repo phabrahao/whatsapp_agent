@@ -11,7 +11,7 @@ import json
 from datetime import datetime, timedelta
 import pytz
 from calendar_test import create_calendar_event as create_gcal_event
-
+from typing import Optional
 
 langchain.debug = True
 
@@ -24,11 +24,12 @@ CALENDAR_ID = os.getenv('CALENDAR_ID')
 def create_calendar_event(
     summary: str,
     start_datetime: str,
-    end_datetime: str = None,
-    location: str = None,
-    description: str = None,
+    end_datetime: Optional[str] = None,
+    location: Optional[str] = None,
+    description: Optional[str] = None,
     timezone: str = "America/New_York"
 ) -> str:
+
     """Create event in google calendar
 
     Args:
@@ -52,7 +53,16 @@ def create_calendar_event(
             start_date = datetime.strptime(start_datetime, '%Y-%m-%d').date()
             if end_datetime and 'T' not in end_datetime and len(end_datetime) == 10:
                 end_date = datetime.strptime(end_datetime, '%Y-%m-%d').date()
+                # Check if this is actually a multi-day event
+                if end_date > start_date:
+                    # Multi-day event: Google Calendar uses exclusive end dates,
+                    # so add 1 day to include the actual end date
+                    end_date = end_date + timedelta(days=1)
+                else:
+                    # Same day or invalid range, treat as single day
+                    end_date = start_date + timedelta(days=1)
             else:
+                # No end date provided, single day event
                 end_date = start_date + timedelta(days=1)
             
             event_config = {
@@ -117,7 +127,9 @@ def create_calendar_event(
             'status': 'confirmed',
         })
         
-        # Create the event
+        print(f"DEBUG: Event config being sent to Google Calendar:")
+        print(json.dumps(event_config, indent=2, default=str))
+
         result = create_gcal_event(SERVICE_ACCOUNT_FILE, CALENDAR_ID, event_config)
         
         return f"Successfully created calendar event: '{summary}' on {start_datetime}"

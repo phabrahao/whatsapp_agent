@@ -11,7 +11,7 @@ import json
 from datetime import datetime, timedelta
 import pytz
 from calendar_test import create_calendar_event as create_gcal_event
-
+from typing import Optional
 
 langchain.debug = True
 
@@ -24,11 +24,12 @@ CALENDAR_ID = os.getenv('CALENDAR_ID')
 def create_calendar_event(
     summary: str,
     start_datetime: str,
-    end_datetime: str = None,
-    location: str = None,
-    description: str = None,
+    end_datetime: Optional[str] = None,
+    location: Optional[str] = None,
+    description: Optional[str] = None,
     timezone: str = "America/New_York"
 ) -> str:
+
     """Create event in google calendar
 
     Args:
@@ -52,7 +53,16 @@ def create_calendar_event(
             start_date = datetime.strptime(start_datetime, '%Y-%m-%d').date()
             if end_datetime and 'T' not in end_datetime and len(end_datetime) == 10:
                 end_date = datetime.strptime(end_datetime, '%Y-%m-%d').date()
+                # Check if this is actually a multi-day event
+                if end_date > start_date:
+                    # Multi-day event: Google Calendar uses exclusive end dates,
+                    # so add 1 day to include the actual end date
+                    end_date = end_date + timedelta(days=1)
+                else:
+                    # Same day or invalid range, treat as single day
+                    end_date = start_date + timedelta(days=1)
             else:
+                # No end date provided, single day event
                 end_date = start_date + timedelta(days=1)
             
             event_config = {
@@ -222,6 +232,7 @@ For the create_calendar_event function:
 If the user provides an invitation image, extract the event details from the image description and create the calendar event.
 
 Give concise, helpful responses.
+If a event is created, always reassure to the user that the event was add to their calendar.
 """)
     
     def assistant(state: MessagesState):
